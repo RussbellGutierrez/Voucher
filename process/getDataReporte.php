@@ -20,9 +20,8 @@ $estado = array();
 $empleado = array();
 $banco = array();
 
-$pendiente = 0;
-$valido = 0;
-$novalido = 0;
+$correcto = 0;
+$observado = 0;
 
 $vendedor = 0;
 $transporte = 0;
@@ -44,12 +43,10 @@ $stm = sqlsrv_query($cadena,$sql);
 while($v = sqlsrv_fetch_array($stm)){
 	$monto += $v['monto'];
 
-	if ($v['estado'] == 0) {
-		$pendiente++;
-	}else if ($v['estado'] == 1) {
-		$valido++;
+	if ($v['estado'] == 1) {
+		$correcto++;
 	}else if ($v['estado'] == 2) {
-		$novalido++;
+		$observado++;
 	}
 
 	if ($v['tipo'] == 'V') {
@@ -78,18 +75,13 @@ while ($v = sqlsrv_fetch_array($stm)) {
 	array_push($banco, $row);
 }
 
-if ($pendiente > 0) {
-	array_push($data,$pendiente);
-	array_push($background,'#6c757d');
-	array_push($label,'PENDIENTE');
-}
-if ($valido > 0) {
-	array_push($data,$valido);
+if ($correcto > 0) {
+	array_push($data,$correcto);
 	array_push($background,'#198754');
 	array_push($label,'VALIDO');
 }
-if ($novalido > 0) {
-	array_push($data,$novalido);
+if ($observado > 0) {
+	array_push($data,$observado);
 	array_push($background,'#dc3545');
 	array_push($label,'NO VALIDO');
 }
@@ -120,31 +112,6 @@ if ($supervisor > 0) {
 $row = array('data'=>$data,'background'=>$background,'label'=>$label);
 array_push($all,array('personal'=>$row));
 
-/*if ($pendiente > 0) {
-	$row = array('tipo'=>'P','total'=>$pendiente,'color'=>'#6c757d');
-	array_push($estado,$row);
-}
-if ($valido > 0) {
-	$row = array('tipo'=>'V','total'=>$valido,'color'=>'#198754');
-	array_push($estado,$row);
-}
-if ($novalido > 0) {
-	$row = array('tipo'=>'N','total'=>$novalido,'color'=>'#dc3545');
-	array_push($estado,$row);
-}
-
-if ($vendedor > 0) {
-	$row = array('tipo'=>'V','total'=>$vendedor,'color'=>'#fd7e14');
-	array_push($empleado,$row);
-}
-if ($transporte > 0) {
-	$row = array('tipo'=>'T','total'=>$transporte,'color'=>'#0d6efd');
-	array_push($empleado,$row);
-}
-if ($supervisor > 0) {
-	$row = array('tipo'=>'S','total'=>$supervisor,'color'=>'#6f42c1');
-	array_push($empleado,$row);
-}*/
 $first = new StdClass;
 $second = new StdClass;
 $thirdOne = new StdClass;
@@ -154,7 +121,7 @@ $thirdOne->monto = round($mayor,2);
 $thirdOne->cliente = $climayor;
 $thirdTwo->monto = round($menor,2);
 $thirdTwo->cliente = $climenor;
-$second->voucher = $pendiente+$valido+$novalido;
+$second->voucher = $correcto+$observado;
 $second->chart = $all;
 $second->monto = round($monto,2);
 $second->mayor = $thirdOne;

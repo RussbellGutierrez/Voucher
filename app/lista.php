@@ -18,6 +18,12 @@
             <div id="u-data" class="mb-3">
                 <div class="badge bg-primary user-div">Voucher revisado por <div id="i-usercheck" class="ml-2 mr-2"></div> el <div id="i-fechacheck" class="ml-2 mr-2"></div></div>
             </div>
+            <div class="d-flex mb-3">
+                <div class="d-flex flex-fill">
+                    <div class="date-font mr-3">Recibido:</div><div id="d-fecha" class="date-font"></div>
+                </div>
+                <div id="div-estado" class="d-flex align-items-center flex-fill"></div>
+            </div>
             <div class="d-flex">
                 <div class="form-group flex-grow-1">
                     <div>Empleado</div>
@@ -42,51 +48,50 @@
                         <input id="i-cliente" class="form-control font-s" readonly/>
                     </div>
                 </div>
-                <div id="div-estado" class="form-group d-flex align-items-center">
-                </div>
             </div>
             <div class="d-flex">
                 <div class="form-group">
                     <div>Banco</div>
                     <div class="input-group mb-3">
                         <div class="input-group-text"><i class="fas fa-university"></i></div>
-                        <input id="i-banco" class="form-control font-s" readonly/>
+                        <input id="i-banco" class="form-control font-s"/>
                     </div>
                 </div>
                 <div class="form-group">
                     <div>Operacion</div>
                     <div class="input-group mb-3">
                         <div class="input-group-text"><i class="fas fa-hashtag"></i></div>
-                        <input id="i-operacion" class="form-control font-s" readonly/>
+                        <input id="i-operacion" class="form-control font-s"/>
                     </div>
                 </div>
                 <div class="form-group">
                     <div>Monto</div>
                     <div class="input-group mb-3">
                         <div class="input-group-text"><i class="fas fa-piggy-bank"></i></div>
-                        <input id="i-monto" class="form-control font-s" readonly/>
+                        <input id="i-monto" class="form-control font-s"/>
                     </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-between">
-                <div class="form-group" style="width: 160px;">
-                    <div>Recibido</div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-text"><i class="fas fa-calendar-day"></i></div>
-                        <input id="i-fecha" class="form-control font-s" value="2020/09/09" readonly/>
-                    </div>
-                </div>
+            <div class="d-flex">
                 <div class="form-group input-flex">
                     <div>Estado</div>
                     <div class="input-group mb-3">
                         <div class="input-group-text"><i class="fas fa-cubes"></i></div>
                         <select id="s-estado" class="form-select font-s">
-                            <option value="0">--ESTADO--</option>
-                            <option value="1">VALIDO</option>
-                            <option value="2">NO VALIDO</option>
+                            <option value="1">CORRECTO</option>
+                            <option value="2">OBSERVADO</option>
                         </select>
                     </div>
                 </div>
+                <div id="d-obs" class="form-group flex-grow-1">
+                    <div>Observacion</div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-text"><i class="fas fa-comment"></i></div>
+                        <input id="i-observacion" class="form-control font-s"/>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
                 <input id="i-id" hidden readonly/>
                 <div class="d-flex flex-row">
                     <button id="cancelar" type="button" class="btn btn-secondary m-3 btn-center"><i class="mr-2 fas fa-window-close"></i> CANCELAR</button>
@@ -108,21 +113,22 @@
     <table id="tabla" class="table table-striped table-bordered" style="width: 100%;">
         <thead>
             <tr class="edt">
-                <th style="width: 30%">Cliente</th>
-                <th style="width: 0%">Monto</th>
-                <th style="width: 30%">Usuario</th>
+                <th style="width: 3%">Codigo</th>
+                <th style="width: 25%">Cliente</th>
+                <th style="width: 5%">Monto</th>
+                <th style="width: 27%">Usuario</th>
                 <th style="width: 10%">Tipo</th>
                 <th style="width: 10%">Estado</th>
                 <th style="width: 10%">Fecha</th>
                 <th style="width: 10%"></th>
                 <th style="width: 0%">Empleado</th>
                 <th style="width: 0%">Id</th>
-                <th style="width: 0%">Cliente</th>
                 <th style="width: 0%">Banco</th>
                 <th style="width: 0%">Movimiento</th>
                 <th style="width: 0%">Estado</th>
                 <th style="width: 0%">Usercheck</th>
                 <th style="width: 0%">Fechacheck</th>
+                <th style="width: 0%">Observacion</th>
             </tr>
         </thead>
     </table>

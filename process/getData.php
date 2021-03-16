@@ -22,7 +22,7 @@ $stm = sqlsrv_query($cadena,$sql);
 
 while($v = sqlsrv_fetch_array($stm)){
 	$monto = round($v['monto'],2);
-	$row = array('empleado'=>$v['emp'],'nombre'=>$v['nom'],'tipo'=>$v['tipo'],'fecha'=>$v['fecha'],'id'=>$v['id'],'cliente'=>$v['cliente'],'nomcli'=>$v['nomcli'],'banco'=>$v['banco'],'movimiento'=>$v['movimiento'],'monto'=>$monto,'estado'=>$v['estado'],'descripcion'=>$v['descrip'],'usercheck'=>$v['usercheck'],'fechacheck'=>$v['fechacheck']);
+	$row = array('empleado'=>$v['emp'],'nombre'=>$v['nom'],'tipo'=>$v['tipo'],'fecha'=>$v['fecha'],'id'=>$v['id'],'cliente'=>$v['cliente'],'nomcli'=>$v['nomcli'],'banco'=>$v['banco'],'movimiento'=>$v['movimiento'],'monto'=>$monto,'estado'=>$v['estado'],'descripcion'=>$v['descrip'],'usercheck'=>$v['usercheck'],'fechacheck'=>$v['fechacheck'],'observacion'=>$v['observacion']);
 	array_push($array, $row);
 }
 

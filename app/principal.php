@@ -98,6 +98,16 @@ Functions::checkSession();
                     $('.collapse.in').toggleClass('in')
                     $('a[aria-expanded=true]').attr('aria-expanded', 'false')
                 })
+                $('#i-monto').on('keypress',function(evt){return isDecimalKey(evt)})
+                $('#i-operacion').on('keypress',function(evt){return isOperacionKey(evt)})
+                $('#s-estado').on('change', function(){
+                    var select = $(this).val()
+                    if (select == 1) {
+                        $('#d-obs').addClass('d-none')
+                    }else {
+                        $('#d-obs').removeClass('d-none')
+                    }
+                })
                 $('#btn-img').on('click', function() {
                     $('#modal').modal()
                 })
@@ -132,6 +142,37 @@ Functions::checkSession();
                     })
                 })
             })
+
+            function isOperacionKey(evt){
+                var charCode = (evt.which) ? evt.which : evt.keyCode
+                if ((charCode > 43 && charCode < 47) || (charCode > 47 && charCode < 58)) {
+                    return true
+                }else {
+                    return false
+                }
+            }
+
+            function isDecimalKey(evt){
+                var charCode = (evt.which) ? evt.which : evt.keyCode
+                if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                    return false
+                }else {
+                    var number = evt.target.value
+                    if (number === "") {
+                        return true
+                    }else {
+                        if (number.indexOf('.') !== -1) {
+                            if (charCode == 46) {
+                                return false
+                            }else {
+                                return true
+                            }
+                        }else {
+                            return true
+                        }
+                    }
+                }
+            }
 
             function setReporte(fecha) {
                 var f = ''
@@ -230,87 +271,6 @@ Functions::checkSession();
                     $('#v-banco').append(html)
                 })
             }
-
-            /*
-            function setCanvas() {
-                var data1 = {
-                    datasets: [{
-                        data: [10, 11, 12],
-                        backgroundColor: [
-                                "#6c757d",
-                                "#198754",
-                                "#dc3545"
-                            ]
-                    }],
-                    labels: [
-                        'PENDIENTE',
-                        'VALIDO',
-                        'NO VALIDO'
-                    ]
-                }
-
-                var data2 = {
-                    datasets: [{
-                        data: [30, 23, 10],
-                        backgroundColor: [
-                                "#fd7e14",
-                                "#0d6efd",
-                                "#6f42c1"
-                            ]
-                    }],
-                    labels: [
-                        'VENDEDOR',
-                        'TRANSPORTISTA',
-                        'SUPERVISOR'
-                    ]
-                }
-
-                var ctx = document.getElementById('v-estado').getContext('2d')
-                var myChart1 = new Chart(ctx, {
-                    type: 'pie',
-                    data: data1,
-                    options: {
-                        animation: {
-                            animateRotate: true,
-                            onComplete: function() {
-                                labelSlice(this)
-                            }
-                        },
-                        title: {
-                            display: true,
-                            fontSize: 15,
-                            text: 'ESTADO VOUCHERS',
-                            position: 'top'
-                        },
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                })
-
-                var ctx2 = document.getElementById('v-tipo').getContext('2d')
-                var myChart2 = new Chart(ctx2, {
-                    type: 'pie',
-                    data: data2,
-                    options: {
-                        animation: {
-                            animateRotate: true,
-                            onComplete: function() {
-                                labelSlice(this)
-                            }
-                        },
-                        title: {
-                            display: true,
-                            fontSize: 15,
-                            text: 'VOUCHERS SEGUN PERSONAL',
-                            position: 'top'
-                        },
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                })
-            }*/
             
             function setTabla(fecha) {
                 var f = ''
@@ -336,6 +296,7 @@ Functions::checkSession();
                         data: {fecha: f}
                     },
                     columns: [
+                        {data:'cliente'},
                         {data:'nomcli'},
                         {data:'monto'},
                         {data:'nombre'},
@@ -348,15 +309,17 @@ Functions::checkSession();
                         }},
                         {data:'empleado'},
                         {data:'id'},
-                        {data:'cliente'},
                         {data:'banco'},
                         {data:'movimiento'},
                         {data:'estado'},
                         {data:'usercheck'},
-                        {data:'fechacheck'}
+                        {data:'fechacheck'},
+                        {data:'observacion'}
                     ],
                     columnDefs: [
-                        {targets:1,
+                        {targets:0,
+                        className: 'text-center'},
+                        {targets:2,
                         className: 'text-center'},
                         {targets:3,
                         className: 'text-center'},
@@ -367,8 +330,7 @@ Functions::checkSession();
                         {targets:6,
                         className: 'text-center'},
                         {targets:7,
-                        visible: false,
-                        searchable: false},
+                        className: 'text-center'},
                         {targets:8,
                         visible: false,
                         searchable: false},
@@ -389,34 +351,40 @@ Functions::checkSession();
                         searchable: false},
                         {targets:14,
                         visible: false,
+                        searchable: false},
+                        {targets:15,
+                        visible: false,
                         searchable: false}
                     ],
                     rowCallback: function(row, data, index) {
                             switch(data.tipo) {
                                 case 'V':
-                                $(row).find('td:eq(3)').text('VENDEDOR')
+                                $(row).find('td:eq(4)').text('VENDEDOR')
                                 break;
                                 case 'T':
-                                $(row).find('td:eq(3)').text('TRANSPORTE')
+                                $(row).find('td:eq(4)').text('TRANSPORTE')
                                 break;
                                 case 'S':
-                                $(row).find('td:eq(3)').text('SUPERVISOR')
+                                $(row).find('td:eq(4)').text('SUPERVISOR')
                                 break;
                             }
                             switch(data.estado) {
                                 case 0:
-                                $(row).find('td:eq(4)').css({'color':"blue","font-weight":"bold"})
+                                $(row).find('td:eq(5)').css({'color':"blue","font-weight":"bold"})
                                 break;
                                 case 1:
-                                $(row).find('td:eq(4)').css({'color':"green","font-weight":"bold"})
+                                $(row).find('td:eq(5)').css({'color':"green","font-weight":"bold"})
                                 break;
                                 case 2:
-                                $(row).find('td:eq(4)').css({'color':"red","font-weight":"bold"})
+                                $(row).find('td:eq(5)').css({'color':"red","font-weight":"bold"})
                                 break;
                             }
-                            $(row).find('td:eq(6)').on('click','button',function(){
+                            $(row).find('td:eq(7)').on('click','button',function(){
                                 setData(data,1)
                             })
+                            if (data.usercheck != null) {
+                                $(row).css('background-color','#f7ecb4')
+                            }
                     },
                     initComplete: function(settings,json) {
                         if ( ! $('#tabla').DataTable().data().any() ) {
@@ -479,59 +447,6 @@ Functions::checkSession();
                 })          
             }
 
-            /*function formatDate() {
-                var f = ''
-                var y = $('#year').val()
-                var m = $('#month').val()
-                var d = $('#day').val()
-                if (y == 0 && m == 0 && d == 0) {
-                    Swal.fire('Advertencia','Debe ingresar algun parametro de fecha','warning')
-                }else {
-
-                    if (y != 0) {
-                        f = y+'-%'
-                    }
-                    if (m != 0 && m.length == 1) {
-                        m = '0'+m
-                        (f != '')? f = y+'-'+m+'%' : f = '_____'+m+'-%'
-                    }
-                    if (d != 0 && d.length == 1) {
-                        d = '0'+d
-                        if(f != '') {
-
-                            switch(f.length) {
-                                case 6:
-                                f = y+'-%'+d
-                                break;
-                                case 8:
-                                f = y+'-'+m+'-'+d
-                                break;
-                                case 9:
-                                f = '%-'+m+'-'+d
-                                break;
-                            }
-                        }else {
-                            f = '%-'+d
-                        }
-                    }
-                }
-            }*/
-
-            /*function dateInput() {
-                var dt = new Date()
-                if (dt.getMonth().toString().length == 1) {
-                    m = '0'+dt.getMonth()
-                }else {
-                    m = dt.getMonth()
-                }
-                if (dt.getDate().toString().length == 1) {
-                    d = '0'+dt.getDate()
-                }else {
-                    d = dt.getDate()
-                }
-                return dt.getFullYear()+'-'+m+'-'+d
-            }*/
-
             function addVouchers() {
                 Swal.fire({title:'Cargando datos de vouchers'})
                 Swal.showLoading()
@@ -551,21 +466,6 @@ Functions::checkSession();
                     }
                 })
             }
-
-            /*function setYear() {
-                var d = new Date()
-                var n = d.getFullYear()
-                var yearlist = [n,n-1,n-2,n-3,n-4]
-                yearlist.forEach(item => $('#year').append('<option value="'+item+'">'+item+'</option>'))
-            }
-
-            function setDay() {
-                var daylist = []
-                for(var i = 1; i < 32; i++) {
-                    daylist.push(i)
-                }
-                daylist.forEach(item => $('#day').append('<option value="'+item+'">'+item+'</option>'))
-            }*/
 
             function setToday() {
                 $.datepicker.regional['es'] = {
@@ -596,8 +496,10 @@ Functions::checkSession();
                     var user = e.split('-')[2]
                     if (user.substring(0,4) == 'caja') {
                         $('#user').text('Caja')
-                    }else {
+                    }else if (user.substring(0,4) == 'cont') {
                         $('#user').text('Contabilidad')
+                    }else {
+                        $('#user').text('Usuario')
                     }
                     if (bd == 1) {
                         $('#empresa').css('color','blue')
@@ -613,18 +515,26 @@ Functions::checkSession();
                 var estado = $('#s-estado').val()
                 var usuario = $('#user').text()
                 var empleado = $('#i-empleado').val().split('-')[0].trim()
-                var fecha = $('#i-fecha').val()
+                var fecha = $('#d-fecha').text()
                 var cliente = $('#i-cliente').val().split('-')[0].trim()
                 var id = $('#i-id').val()
-                $.post('/voucher/process/updateVoucher.php',{estado:estado,usuario:usuario,empleado:empleado,fecha:fecha,cliente:cliente,id:id},function(e){
-                    if (e == 'success') {
-                        setData(null,0)
-                        Swal.fire('Correcto','Se guardo el estado del voucher','success')
-                        setTabla()
-                    }else {
-                        Swal.fire('Error','Ocurrio un error al guardar los cambios','error')
-                    }
-                })
+                var banco = $('#i-banco').val()
+                var operacion = $('#i-operacion').val()
+                var monto = $('#i-monto').val()
+                var observacion = $('#i-observacion').val()
+                if (banco == '' || operacion == '' || monto == '') {
+                    Swal.fire('Advertencia','Los campos de banco, monto u operacion no pueden estar vacios','warning')
+                }else {
+                    $.post('/voucher/process/updateVoucher.php',{estado:estado,usuario:usuario,empleado:empleado,fecha:fecha,cliente:cliente,id:id,banco:banco,monto:monto,operacion:operacion,observacion:observacion},function(e){
+                        if (e == 'success') {
+                            setData(null,0)
+                            Swal.fire('Correcto','Se guardo el estado del voucher','success')
+                            setTabla()
+                        }else {
+                            Swal.fire('Error','Ocurrio un error al guardar los cambios','error')
+                        }
+                    })
+                }
             }
 
             function setData(data,opt) {
@@ -632,24 +542,26 @@ Functions::checkSession();
                     $('#datos').addClass('d-none')
                     $('#i-cliente').val('')
                     $('#i-empleado').val('')
-                    $('#i-fecha').val('')
+                    $('#d-fecha').text('')
                     $('#i-tipo').val('')
                     $('#i-banco').val('')
                     $('#i-monto').val('')
                     $('#i-operacion').val('')
                     $('#div-estado').html()
-                    $('#s-estado').val(0)
+                    $('#s-estado').val(1)
                     $('#i-id').val('')
                     $('#u-data').addClass('d-none')
                     $('#i-usercheck').text('')
                     $('#i-fechacheck').text('')
                     $('#img').attr('src', '')
                     $('#img-zoom').attr('src', '')
+                    $('#d-obs').addClass('d-none')
+                    $('#i-observacion').val('')
                 }else {
                     $('#datos').removeClass('d-none')
                     $('#i-cliente').val(data.cliente+' - '+data.nomcli)
                     $('#i-empleado').val(data.empleado+' - '+data.nombre)
-                    $('#i-fecha').val(data.fecha)
+                    $('#d-fecha').text(data.fecha)
                     if (data.tipo == 'V') {
                         $('#i-tipo').val('VENDEDOR')
                     }else if (data.tipo == 'T') {
@@ -660,17 +572,17 @@ Functions::checkSession();
                     $('#i-banco').val(data.banco)
                     $('#i-monto').val(data.monto)
                     $('#i-operacion').val(data.movimiento)
-                    if (data.estado == 0) {
-                        $('#div-estado').html()
-                        $('#div-estado').html('<span class="badge bg-secondary" style="font-size: 1rem;">'+data.descripcion+'</span>')
-                    }else if (data.estado == 1) {
+                    if (data.estado == 1) {
                         $('#div-estado').html()
                         $('#div-estado').html('<span class="badge bg-success" style="font-size: 1rem;">'+data.descripcion+'</span>')
+                        $('#d-obs').addClass('d-none')
                     }else {
                         $('#div-estado').html()
                         $('#div-estado').html('<span class="badge bg-danger" style="font-size: 1rem;">'+data.descripcion+'</span>')
+                        $('#d-obs').removeClass('d-none')
                     }
                     $('#s-estado').val(data.estado)
+                    $('#i-observacion').val(data.observacion)
                     $('#i-id').val(data.id)
                     if (data.usercheck == null) {
                         $('#u-data').addClass('d-none')
@@ -762,6 +674,11 @@ Functions::checkSession();
         .font-s {
             font-size: 14px !important;
         }
+        .date-font {
+            font-size: 20px;
+            font-style: italic;
+            font-weight: bold;
+        }
         /*IMAGE OVERLAY*/
         .img-overlay {
             position: relative;
@@ -790,209 +707,5 @@ Functions::checkSession();
         .img-overlay:hover .middle {
             opacity: 1;
         }
-        /**/
-        /*.container-edt {
-            display: flex;
-            flex-direction: column;
-        }
-        .flexing {
-            display: flex;
-            align-items: center;
-            padding: 1.2rem 2.2rem;
-            justify-content: space-between;
-        }
-        .pad-body {
-            padding: 1rem 2.2rem;
-        }
-        .shadow-one-edge {
-            box-shadow: 0 3px 6px -1px #D3D3D3;
-        }
-        .head-back {
-            background-color: #33709E;
-            color: white;
-        }
-        .f40 {
-            font-size: 40px;
-        }
-        .f30 {
-            font-size: 30px;
-        }
-        .f25 {
-            font-size: 25px;
-        }
-        .f20 {
-            font-size: 20px;
-        }
-        .m-lr6 {
-            margin: 0px 6px;
-        }
-        .m-u10 {
-            margin: 0 10px 10px 10px;
-        }
-        .titulo-parent {
-            display: contents;
-        }
-        .cuerpo-parent {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px;
-        }
-        .cuerpo-child {
-            width: 100%;
-            margin: 5px 0;
-            padding: 5px;
-            border-radius: 3px;
-            border: 1px solid #ccc;
-            background-color: #bcf3f74d;
-        }
-        .cuerpo-item {
-            display: flex;
-            align-items: center;
-        }
-        .pie-parent {
-            margin: 5px;
-        }
-        .pie-parent button {
-            margin-right: 16px;
-        }
-        .pie-parent button:last-child {
-            margin-right: 5px;
-        }
-        .move {
-            transform: translate3d(-100px, 37px, 0px) !important;
-        }
-        .align {
-            align-items: center;
-        }
-        .align-space {
-            width: 100%;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .title {
-            font-size: 20px;
-            font-style: italic;
-            font-weight: bold;
-            text-decoration: underline;
-        }
-        .btn-edt {
-            font-size: 13px;
-            border: 2px solid;
-            font-weight: bold;
-        }
-        .over-x {
-            overflow-x: hidden;
-            font-size: .8rem;
-            padding: 5px;
-            background-color: white;
-        }
-        .option {
-            margin: 5px 10px;
-            padding: 5px 0;
-            font-size: 13px;
-            display: flex;
-            align-items: baseline;
-            cursor: pointer;
-        }
-        .modal-body,.modal-footer {
-            padding: 0;
-        }
-        .fa-calendar {
-            color: #1E6AD2;
-        }
-        .fa-power-off {
-            color: #CC3636;
-        }
-        .dropdown-menu {
-            margin: 0;
-            padding: 0;
-        }
-        .opt-text {
-            font-size: 15px;
-            padding: 0px 5px;
-        }
-        .btn-custom {
-            background-color: #2D6D88;
-            border: none;
-            color: white;
-            font-size: 12px;
-        }
-        .btn-ellipsis {
-            background-color: #33709E;
-            border: none;
-            color: white;
-        }
-        .btn-custom:hover {
-            background-color: #91E7F6 !important;
-        }
-        .btn-ellipsis:hover {
-            color: white;
-        }
-        .btn-ellipsis:focus,.btn-custom:focus {
-            outline: none;
-            box-shadow: none;
-        }
-        .table td {
-            padding: 7px 6px;
-            vertical-align: middle;
-            border-top: none;
-            border-bottom: none;
-        }
-        .table-bordered {
-            border-top: none;
-            border-bottom: none;
-        }
-        .edt {
-            font-size: 13px;
-            text-align: center;
-        }
-        .edt th {
-            border-top-color: #E6E6E6 !important;
-            border-bottom-color: #ccc !important;
-        }
-        .frame {
-            width: 300px;
-            height: 300px;
-            margin: 10px 0 0 0;
-            padding: 3px;
-            border: 1px solid black;
-            border-radius: 4px;
-        }
-        .zoom {
-            position: relative;
-            float: left;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-        .photo {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover;
-            transition: transform .5s ease-out;
-        }
-        .empty-edt {
-            position: relative;
-            text-align: center;
-        }
-        .img-back {
-            max-width: 100%;
-            height: calc(100vh - 83.38px);
-        }
-        .centered-bottom {
-            position: absolute;
-            top: 75%;
-            left: 50%;
-            font-size: x-large;
-            font-weight: bold;
-            color: #0084c4;
-            transform: translate(-50%, -50%);
-        }*/
     </style>
 </html>
